@@ -137,6 +137,34 @@ def _add_gaussian_noise(image: np.ndarray, std_dev: float) -> np.ndarray:
     return noisy_image
 
 
+def create_checkerboard(size, square_size=30):
+    rows, cols = size
+    checkerboard = np.zeros((rows, cols), dtype=np.uint8)
+    for i in range(0, rows, square_size * 2):
+        for j in range(0, cols, square_size * 2):
+            checkerboard[i : i + square_size, j : j + square_size] = 255
+            checkerboard[i + square_size : i + square_size * 2, j + square_size : j + square_size * 2] = 255
+
+    checkerboard = np.asarray(checkerboard, dtype=np.float64) / 255.0
+    return checkerboard
+
+
+def additive_superimposition(img0: np.ndarray, img1: np.ndarray, alpha: float = 0.5):
+    """
+    Additively superimpose two images using a given alpha value.
+    Args:
+        img0 (np.ndarray): First input image.
+        img1 (np.ndarray): Second input image.
+        alpha (float): Weighting factor for the superimposition.
+    """
+    blended_image = alpha * img0 + (1 - alpha) * img1
+
+    # Rescale to 0-255 range
+    # blended_image = np.clip(blended_image * 255, 0, 255).astype(np.uint8)
+    blended_image = np.clip(blended_image, 0, 1)
+    return blended_image
+
+
 # convert from rgb to grayscale image
 def rgb2gray(rgb):
 
